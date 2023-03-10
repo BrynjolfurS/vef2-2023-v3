@@ -1,10 +1,13 @@
-import express from 'express';
+import express, {NextFunction, Request, Response } from 'express';
+import dotenv from 'dotenv';
 import { catchErrors } from './lib/catch-errors.js';
-import { router, bye, hello, error } from './routes/api.js';
+import { router } from './routes/api.js';
 
+dotenv.config();
 const app = express();
 
-app.get('/', catchErrors(hello), catchErrors(error), catchErrors(bye));
+app.use(express.json());
+
 app.use(router);
 
 const port = 3000;
@@ -12,3 +15,10 @@ const port = 3000;
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
+
+app.use((req: Request, res: Response) => {
+  res.status(404).json({
+    error: 'Not found'
+  });
+});
+

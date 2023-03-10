@@ -1,0 +1,24 @@
+CREATE TABLE public.departments (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(64) NOT NULL UNIQUE,
+    slug VARCHAR(64) NOT NULL UNIQUE,
+    description VARCHAR(1000) NOT NULL,
+    created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TYPE semester AS ENUM('Vor', 'Sumar', 'Haust', 'Heilsárs');
+
+CREATE TABLE public.courses (
+    id SERIAL PRIMARY KEY,
+    department_id INTEGER NOT NULL,
+    courseNumber VARCHAR(15) NOT NULL UNIQUE,
+    title VARCHAR(64) NOT NULL UNIQUE,
+    credits REAL NOT NULL CONSTRAINT credits_check CHECK (credits > 0),
+    semester semester NOT NULL,
+    level VARCHAR(128) DEFAULT NULL,
+    url VARCHAR(256) DEFAULT NULL,
+    created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_department_id FOREIGN KEY (department_id) REFERENCES departments(id)
+);
